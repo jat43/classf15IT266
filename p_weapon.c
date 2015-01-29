@@ -884,25 +884,32 @@ void Weapon_HyperBlaster_Fire (edict_t *ent)
 		}
 		else
 		{
-			rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6;
-			offset[0] = -4 * sin(rotation);
-			offset[1] = 0;
-			offset[2] = 4 * cos(rotation);
-
-			rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6 + M_PI*2.0/3.0;
-			offset[0] = -4 * sin(rotation);
-			offset[1] = 0;
-			offset[2] = 4 * cos(rotation);
-
-			rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6 + M_PI*4.0/3.0;
-			offset[0] = -4 * sin(rotation);
-			offset[1] = 0;
-			offset[2] = 4 * cos(rotation);
-
+			
 			if ((ent->client->ps.gunframe == 6) || (ent->client->ps.gunframe == 9))
-				effect = EF_HYPERBLASTER;
+				effect = EF_ROCKET;
 			else
 				effect = 0;
+
+			rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6;
+			offset[0] = -8 * sin(rotation);
+			offset[1] = 0;
+			offset[2] = 8 * cos(rotation);
+			Blaster_Fire (ent, offset, 20, true, effect);
+
+			rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6 + M_PI*2.0/3.0;
+			offset[0] = -8 * sin(rotation);
+			offset[1] = 0;
+			offset[2] = 8 * cos(rotation);
+			Blaster_Fire (ent, offset, 20, true, effect);
+
+			rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6 + M_PI*4.0/3.0;
+			offset[0] = -8 * sin(rotation);
+			offset[1] = 0;
+			offset[2] = 8 * cos(rotation);
+			Blaster_Fire (ent, offset, 20, true, effect);
+
+			ent->client->pers.inventory[ent->client->ammo_index] += ent->client->pers.weapon->quantity * 3;
+
 			if (deathmatch->value)
 				damage = 15;
 			else
