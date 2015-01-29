@@ -861,9 +861,16 @@ void Weapon_Blaster (edict_t *ent)
 void Weapon_HyperBlaster_Fire (edict_t *ent)
 {
 	float	rotation;
-	vec3_t	offset;
 	int		effect;
 	int		damage;
+
+	vec3_t	offset, start;
+	vec3_t	forward, right;
+	float	damage_radius;
+	int		radius_damage;
+
+	damage_radius = 120;
+	radius_damage = 120;
 
 	ent->client->weapon_sound = gi.soundindex("weapons/hyprbl1a.wav");
 
@@ -886,10 +893,10 @@ void Weapon_HyperBlaster_Fire (edict_t *ent)
 		{
 			
 			if ((ent->client->ps.gunframe == 6) || (ent->client->ps.gunframe == 9))
-				effect = EF_ROCKET;
+				effect = EF_HYPERBLASTER; 
 			else
 				effect = 0;
-
+			//added three different bullets
 			rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6;
 			offset[0] = -8 * sin(rotation);
 			offset[1] = 0;
@@ -903,10 +910,17 @@ void Weapon_HyperBlaster_Fire (edict_t *ent)
 			Blaster_Fire (ent, offset, 20, true, effect);
 
 			rotation = (ent->client->ps.gunframe - 5) * 2*M_PI/6 + M_PI*4.0/3.0;
-			offset[0] = -8 * sin(rotation);
+			offset[0] = -4 * sin(rotation);
 			offset[1] = 0;
-			offset[2] = 8 * cos(rotation);
-			Blaster_Fire (ent, offset, 20, true, effect);
+			offset[2] = 4 * cos(rotation);
+			AngleVectors (ent->client->v_angle, forward, right, NULL);
+
+			VectorScale (forward, -2, ent->client->kick_origin);
+			ent->client->kick_angles[0] = -1;
+
+			VectorSet(offset, 8, 8, ent->viewheight-8);
+			P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+			fire_rocket (ent, start, forward, 150, 650, damage_radius, radius_damage);
 
 			ent->client->pers.inventory[ent->client->ammo_index] += ent->client->pers.weapon->quantity * 3;
 
